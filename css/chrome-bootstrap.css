@@ -120,12 +120,6 @@
   align-items: flex-start;
 }
 
-.navigation{
-  top: 0;
-  position: sticky;
-  margin-right: 20px;
-}
-
 .chrome-bootstrap .frame .view,
 .chrome-bootstrap .frame .content {
   min-width: 600px;
@@ -258,39 +252,6 @@ section {
   height: 12px;
   top: 1px;
   background-position-y: -1px;
-}
-.chrome-bootstrap ul.menu {
-  margin-top: 1em;
-  margin-bottom: 2em;
-  margin-block-start: 0px;
-  margin-block-end: 0px;
-  padding-inline-start: 40px;
-  list-style-type: none;
-  padding: 0;
-}
-.chrome-bootstrap ul.menu li {
-  border-inline-start: 6px solid transparent;
-  padding-inline-start: 18px;
-  -webkit-user-select: none;
-  display: list-item;
-  text-align: -webkit-match-parent;
-}
-.chrome-bootstrap ul.menu li.selected {
-  border-inline-start-color: #4e5764; 
-}
-.chrome-bootstrap ul.menu li.selected a {
-  color: #464E5A;
-}
-.chrome-bootstrap ul.menu li a {
-  border: 0;
-  color: #999;
-  cursor: pointer;
-  font: inherit;
-  line-height: 29px;
-  margin: 0;
-  padding: 0;
-  text-decoration: none;
-  display: block;
 }
 .chrome-bootstrap .arrow_collapse {
   border-top: 5px solid transparent;

@@ -1,10 +1,10 @@
 $(function() {
   var body = $('body');
-  $('.menu a').click(function(ev) {
+  $('.navigation__item a').click(function(ev) {
     ev.preventDefault();
     var selected = 'selected';
 
-    $('.mainview > *, .menu li').removeClass(selected);
+    $('.mainview > *, .navigation__item').removeClass(selected);
     setTimeout(function() {
       $('.mainview > *').not('.selected').css('display', 'none');
     }, 100);
