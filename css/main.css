@@ -1,3 +1,9 @@
+/* Base Styles */
+img {
+  max-width: 100%;
+}
+
+/* Navigation */
 .navigation {
   margin-right: 20px;
   position: sticky;
@@ -44,4 +50,28 @@
 
 .navigation__item.selected a {
   color: #464E5A;
+}
+
+/* Social and Website */
+.social-connect {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: space-between;
+  width: 100%;
+}
+
+.social-connect__link {
+  background-color: #f3f2f3;
+  border-radius: 2px;
+  border: 1px solid #d0cdd0 !important;
+  display: block;
+  height: 24px;
+  padding: 11px;
+  transition: background-color .25s;
+  width: 24px;
+}
+
+.social-connect__link:hover {
+  background-color: #e6e5e6;
 }

@@ -134,16 +134,6 @@ h3, h4 {
     }
 }
 
-
-.nav-button {
-    padding: 7px 0 35px 0;
-    width: 100%;
-}
-
-.nav-button>img {
-    width:50%;
-}
-
 .changelog-list, .changelog-list>li {
     list-style-type: disc !important;
 }
@@ -174,17 +164,4 @@ h3, h4 {
     text-align: center;
     border: 1px solid #dddddd;
     padding: 8px;
-}
-
-.icon-grid{
-    width:80%;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0px, 60px));
-    margin: 20px 5px;
-    grid-gap: 5px;
-
-}
-
-.icon-grid div{
-    text-align: center;
 }
