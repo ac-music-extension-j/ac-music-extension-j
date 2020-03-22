@@ -3,6 +3,13 @@ img {
   max-width: 100%;
 }
 
+/* Container */
+.container {
+  display: flex;
+  justify-content: space-around;
+  max-width: 960px;
+}
+
 /* Navigation */
 .navigation {
   margin-right: 20px;
