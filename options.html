@@ -11,6 +11,7 @@
 	<script src="scripts/options/navigation.js"></script>
 	<script src="scripts/global/tune_player.js"></script>
 	<script src="scripts/options/tune_editor.js"></script>
+	<script src="scripts/background/KKSongs.js"></script>
 	<script src="scripts/options/options.js"></script>
 	<script src="scripts/options/contributors.js"></script>
 	<style>
@@ -80,6 +81,9 @@
 							<input id="new-leaf" name="music-choice" type="radio"><label for="new-leaf"><span><span></span></span>New Leaf</label>
 						</div>
 						<div class="radio">
+							<input id="new-horizons" name="music-choice" type="radio"><label for="new-horizons"><span><span></span></span>New Horizons</label>
+						</div>
+						<div class="radio">
 							<input id="game-random" name="music-choice" type="radio"><label for="game-random"><span><span></span></span>Random!</label>
 						</div>
 					</section>
@@ -129,6 +133,14 @@
 						<div class="radio">
 							<input id="kk-version-both" name="kk-version" type="radio"><label for="kk-version-both"><span><span></span></span>Both</label>
 						</div>
+					</section>
+					<section>
+						<h4>Select songs</h4>
+						<div class="checkbox">
+							<input id="kk-songs-selection-enable" type="checkbox"><label for="kk-songs-selection-enable"><span></span>Only play the selected K.K. songs</label>
+						</div>
+						<select id="kk-songs-selection" style="height: 25vh" multiple></select>
+						<label for="kk-songs-selection" style="display: block"><b>Strg/Cmd + Click</b> for mutliple selection</label>
 					</section>
 
 					<section>
@@ -196,17 +208,24 @@
 					<section>
 						<p>Compose a tune to be played every hour on the hour</p>
 						<div class="pitch-template hidden">
-							<input class="pitch-name" type="text" maxlength="2" size="2">
-							<input class="pitch-slider" type="range" min="0" max="14" step="1" orient="vertical">
+							<input class="pitch-name"   type="text"  maxlength="2" size="2">
+							<input class="pitch-slider" type="range" min="0" max="16" step="1" orient="vertical">
 						</div>
 						<div class="staff staff1"></div>
 						<div class="staff staff2"></div>
+						<br>
+						<p>Town tune volume:</p>
+						<input id="townTuneVolume" type="range" min="0" max="1" step="0.01">
+						<span  id="townTuneVolumeText"></span>
 					</section>
 
 					<header>
 						<div style="padding: 0; margin: 0; height:18px;"></div>
 						<div class="controls">
 							<button class="play-tune">Play!</button>
+							<div class="spacer"></div>
+							<button class="reset-tune">Reset to Default</button>
+							<button class="randomize-tune">Randomize</button>
 							<div class="spacer"></div>
 							<button class="save-tune">Save</button>
 						</div>
@@ -257,7 +276,18 @@
 				</header>
 
 				<div class="content">
-					<h3>Version 4.1.0<span class="changelog-date"> - 13th of February 2020</span></h3>
+					<h3>Version 4.2.0<span class="changelog-date"> - 28th of March 2020</span></h3>
+					<ul class="changelog-list">
+						<li>Added support for New Horizons.</li>
+						<li>Fixed a bug causing the extension to sometimes not run in the background when the feature was enabled.</li>
+					</ul>
+					<h3>Version 4.1.1<span class="changelog-date"> - 14th of March 2020</span></h3>
+					<ul class="changelog-list">
+						<li>Removed the F1 note as it was not meant to exist</li>
+						<li>Fixed a bug causing the E3 note to be silent in hourly playback</li>
+						<li>Fixed a bug causing the town tune to be slightly out of tune in hourly playback</li>
+					</ul>
+					<h3>Version 4.1.0<span class="changelog-date"> - 23rd of February 2020</span></h3>
 					<ul class="changelog-list">
 						<li>Added checks for MediaSession API fixing the issue where music would not play in some browsers and older versions of Chrome</li>
 						<li>Fixed a bug causing the Tab Audio Handler to not work as intended on some browsers</li>
@@ -272,6 +302,14 @@
 						<li>Overhauled about page</li>
 						<li>Changed API endpoints and domain</li>
 						<li>Added a built-in option to stop the extension from playing music when Chrome is closed</li>
+						<li>Added an option to edit the town tune's volume</li>
+						<li>Updated the default town tune</li>
+						<li>Overhauled Town Tune Editor</li>
+						<li>Added ? notes support to Town Tune Editor</li>
+						<li>Added reset to default and randomize buttons to Town Tune Editor</li>
+						<li>Fixed a bug causing the town tune to play while Tab Audio Behaviour is set to paused and a tab is playing audio</li>
+						<li>Fixed a bug causing the volume to not update if the volume was changed while the extension was paused</li>
+						<li>Fixed a bug causing the badge text to become incorrect if the extension was paused when an hour ticked over</li>
 					</ul>
 					<h3>Version 4.0.0<span class="changelog-date"> - 8th of February 2020</span></h3>
 					<ul class="changelog-list">

@@ -4,6 +4,7 @@ const onClickElements = [
 	'animal-crossing',
 	'wild-world',
 	'new-leaf',
+	'new-horizons',
 	'game-random',
 	'sunny',
 	'snowing',
@@ -17,13 +18,13 @@ const onClickElements = [
 	'absolute-town-tune',
 	'enable-notifications',
 	'enable-badge',
-	'enable-background',
 	'kk-version-live',
 	'kk-version-aircheck',
 	'kk-version-both',
 	'tab-audio-nothing',
 	'tab-audio-reduce',
-	'tab-audio-pause'
+	'tab-audio-pause',
+	'kk-songs-selection-enable'
 ];
 
 const exclamationElements = [
@@ -53,6 +54,11 @@ window.onload = function () {
 		let volumeText = document.getElementById('volumeText');
 		volumeText.innerHTML = `${formatPercentage(this.value*100)}`;
 	};
+	document.getElementById('townTuneVolume').onchange = saveOptions; // Maybe disable as to only save when clicking "save" button
+	document.getElementById('townTuneVolume').oninput = function() {
+		let ttVolumeText = document.getElementById('townTuneVolumeText');
+		ttVolumeText.innerHTML = `${formatPercentage(this.value*100)}`;
+	};
 
 	onClickElements.forEach(el => {
 		document.getElementById(el).onclick = saveOptions;
@@ -68,6 +74,34 @@ window.onload = function () {
 		}
 	});
 
+	let enableBackgroundEl = document.getElementById('enable-background');
+	enableBackgroundEl.onclick = () => {
+		chrome.permissions.contains({ permissions: ['background'] }, hasPerms => {
+			if (enableBackgroundEl.checked) {
+				chrome.permissions.contains({ permissions: ['background'] }, hasPerms => {
+					if (hasPerms) saveOptions();
+					else {
+						chrome.permissions.request({ permissions: ['background'] }, hasPerms => {
+							if (hasPerms) saveOptions();
+							else enableBackgroundEl.checked = false;
+						});
+					}
+				});
+			} else if (hasPerms) chrome.permissions.remove({ permissions: ['background'] });
+		});
+	}
+
+	document.getElementById('kk-songs-selection-enable').onchange = saveOptions;
+	document.getElementById('kk-songs-selection').onchange = saveOptions;
+
+	const kkSongsSelect = document.getElementById('kk-songs-selection');
+	KKSongList.forEach((song) => {
+		const songOption = document.createElement('option');
+		songOption.text = song;
+		songOption.value = song;
+		kkSongsSelect.appendChild(songOption);
+	});
+
 	updateContributors();
 }
 
@@ -79,11 +113,14 @@ function saveOptions() {
 	let enableKK = alwaysKK || document.getElementById('enable-kk').checked;
 	let enableTownTune = document.getElementById('enable-town-tune').checked;
 	let absoluteTownTune = document.getElementById('absolute-town-tune').checked;
+	let townTuneVolume   = document.getElementById('townTuneVolume').value;
 	let zipCode = document.getElementById('zip-code').value;
 	let countryCode = document.getElementById('country-code').value;
 	let enableBadgeText = document.getElementById('enable-badge').checked;
 	let enableBackground = document.getElementById('enable-background').checked;
 	let tabAudioReduceValue = document.getElementById('tab-audio-reduce-value').value;
+	let kkSelectedSongsEnable = document.getElementById('kk-songs-selection-enable').checked;
+	let kkSelectedSongs = Array.from(document.getElementById('kk-songs-selection').selectedOptions).map(option => option.value);
 
 	if (tabAudioReduceValue > 100) {
 		document.getElementById('tab-audio-reduce-value').value = 100;
@@ -99,6 +136,7 @@ function saveOptions() {
 	if (document.getElementById('animal-crossing').checked) music = 'animal-crossing';
 	else if (document.getElementById('wild-world').checked) music = 'wild-world';
 	else if (document.getElementById('new-leaf').checked) music = 'new-leaf';
+	else if (document.getElementById('new-horizons').checked) music = 'new-horizons';
 	else if (document.getElementById('game-random').checked) music = 'game-random';
 
 	if (document.getElementById('sunny').checked) weather = 'sunny';
@@ -128,6 +166,8 @@ function saveOptions() {
 
 	document.getElementById('kk-version-selection').querySelectorAll('input').forEach(updateChildrenState.bind(null, enabledKKVersion));
 
+	document.getElementById('kk-songs-selection').disabled = !kkSelectedSongsEnable;
+
 	chrome.storage.sync.set({
 		volume,
 		music,
@@ -138,19 +178,22 @@ function saveOptions() {
 		kkVersion,
 		enableTownTune,
 		absoluteTownTune,
+		townTuneVolume,
 		zipCode,
 		countryCode,
 		enableBadgeText,
 		enableBackground,
 		tabAudio,
-		tabAudioReduceValue
+		tabAudioReduceValue,
+		kkSelectedSongsEnable,
+		kkSelectedSongs
 	});
 }
 
 function restoreOptions() {
 	chrome.storage.sync.get({
 		volume: 0.5,
-		music: 'new-leaf',
+		music: 'new-horizons',
 		weather: 'sunny',
 		enableNotifications: true,
 		enableKK: true,
@@ -158,12 +201,15 @@ function restoreOptions() {
 		kkVersion: 'live',
 		enableTownTune: true,
 		absoluteTownTune: false,
+		townTuneVolume: 0.75,
 		zipCode: "98052",
 		countryCode: "us",
 		enableBadgeText: true,
 		tabAudio: 'pause',
 		enableBackground: false,
-		tabAudioReduceValue: 80
+		tabAudioReduceValue: 80,
+		kkSelectedSongsEnable: false,
+		kkSelectedSongs: []
 	}, items => {
 		document.getElementById('volume').value = items.volume;
 		document.getElementById('volumeText').innerHTML = `${formatPercentage(items.volume*100)}`;
@@ -176,12 +222,15 @@ function restoreOptions() {
 		document.getElementById('kk-version-' + items.kkVersion).checked = true;
 		document.getElementById('enable-town-tune').checked = items.enableTownTune;
 		document.getElementById('absolute-town-tune').checked = items.absoluteTownTune;
+		document.getElementById('townTuneVolume').value = items.townTuneVolume;
+		document.getElementById('townTuneVolumeText').innerHTML = `${formatPercentage(items.townTuneVolume*100)}`;
 		document.getElementById('zip-code').value = items.zipCode;
 		document.getElementById('country-code').value = items.countryCode;
 		document.getElementById('enable-badge').checked = items.enableBadgeText;
 		document.getElementById('enable-background').checked = items.enableBackground;
 		document.getElementById('tab-audio-' + items.tabAudio).checked = true;
 		document.getElementById('tab-audio-reduce-value').value = items.tabAudioReduceValue;
+		document.getElementById('kk-songs-selection-enable').checked = items.kkSelectedSongsEnable;
 
 		// Disable raining if the game is animal crossing, since there is no raining music for animal crossing.
 		document.getElementById('raining').disabled = items.music == 'animal-crossing';
@@ -192,7 +241,18 @@ function restoreOptions() {
 		document.getElementById('music-selection').querySelectorAll('input').forEach(updateChildrenState.bind(null, items.alwaysKK));
 		document.getElementById('weather-selection').querySelectorAll('input').forEach(updateChildrenState.bind(null, items.alwaysKK));
 		document.getElementById('kk-version-selection').querySelectorAll('input').forEach(updateChildrenState.bind(null, enabledKKVersion));
+
+		const kkSongsSelect = document.getElementById('kk-songs-selection');
+		kkSongsSelect.disabled = !items.kkSelectedSongsEnable;
+
+		items.kkSelectedSongs.forEach((song) => {
+			const songIndex = Array.from(kkSongsSelect.options).findIndex((option, idx) => {
+				return option.value === song ? String(idx) : false; // Why String()?: if idx is 0, the function returns -1
+			});
+			kkSongsSelect.options[songIndex].selected = 'selected';
+		});
 	});
+
 }
 
 function validateWeather() {
@@ -253,6 +313,6 @@ function validateWeather() {
 	}
 }
 
-function updateChildrenState(disabled, childElement){		
+function updateChildrenState(disabled, childElement){
 	childElement.disabled = disabled
 }

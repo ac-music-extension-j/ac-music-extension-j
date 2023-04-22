@@ -8,9 +8,9 @@
 
 function AudioManager(addEventListener, isTownTune) {
 
-	// if eventsEnabled is true, plays event music when appliccable. 
-	// Only enable after all game's music-folders contain one .ogg sound file for each event 
-	// (i.e. "halloween.ogg" in newLeaf, AC,) 
+	// if eventsEnabled is true, plays event music when appliccable.
+	// Only enable after all game's music-folders contain one .ogg sound file for each event
+	// (i.e. "halloween.ogg" in newLeaf, AC,)
 	// Should also be used for disabling event music for those who have turned them off in the settings, then this  should be false.
 	let eventsEnabled = false;
 
@@ -33,6 +33,7 @@ function AudioManager(addEventListener, isTownTune) {
 	let reduceVolumeValue = 0;
 	let reducedVolume = false;
 	let tabAudioPaused = false;
+	let pausedDuringTownTune = false;
 
 	// isHourChange is true if it's an actual hour change,
 	// false if we're activating music in the middle of an hour
@@ -42,11 +43,12 @@ function AudioManager(addEventListener, isTownTune) {
 		audio.removeEventListener("ended", playKKSong);
 		let fadeOutLength = isHourChange ? 3000 : 500;
 		fadeOutAudio(fadeOutLength, () => {
-			if (isHourChange && isTownTune()) {
+			if (isHourChange && isTownTune() && !tabAudioPaused) {
 				townTunePlaying = true;
-				townTuneManager.playTune(() => {
+				townTuneManager.playTune(false, () => {
 					townTunePlaying = false;
-					playHourSong(game, weather, hour, false);
+					if (!pausedDuringTownTune) playHourSong(game, weather, hour, false);
+					else pausedDuringTownTune = false;
 				});
 			} else playHourSong(game, weather, hour, false);
 		});
@@ -65,13 +67,14 @@ function AudioManager(addEventListener, isTownTune) {
 		let songName = formatHour(hour);
 
 		// EVENT SONG NAME FORMATTING
-		// TODO: Re-enable events.
-		/*if(timeKeeper.getEvent() !== "none"){ //getEvent() returns eventname, or "none".
+		// TODO: Re-enable events after adding necessary files.
+		// TODO: Fetch eventsEnabled from user options instead of local boolean.
+		/*if(eventsEnabled && timeKeeper.getEvent() !== "none"){ //getEvent() returns eventname, or "none".
 			// Changing the song name to the name of the event, if an event is ongoing.
 			songName = timeKeeper.getEvent();
 		}*/
 
-		// SETTING AUDIO SOURCE		
+		// SETTING AUDIO SOURCE
 		audio.src = `https://acmusicext.com/static/${game}/${weather}/${songName}.ogg`;
 
 		let loopTime = ((loopTimes[game] || {})[weather] || {})[hour];
@@ -88,6 +91,8 @@ function AudioManager(addEventListener, isTownTune) {
 		}
 
 		audio.onpause = onPause;
+
+		setVolume();
 
 		audio.onplay = () => {
 			// If we resume mid-song, then we recalculate the delayToLoop
@@ -158,20 +163,33 @@ function AudioManager(addEventListener, isTownTune) {
 	function playKKSong() {
 		audio.onpause = null;
 
-		let version;
-		if (kkVersion == 'both') {
-			if (Math.floor(Math.random() * 2) == 0) version = 'live';
-			else version = 'aircheck';
-		} else version = kkVersion;
+		chrome.storage.sync.get({
+			kkSelectedSongsEnable: false, kkSelectedSongs: []
+		}, (items) => {
+			const kkSelectedSongsEnable = items.kkSelectedSongsEnable;
+			const kkSelectedSongs = items.kkSelectedSongs;
 
-		let randomSong = KKSongList[Math.floor(Math.random() * KKSongList.length)];
-		audio.src = `https://acmusicext.com/static/kk/${version}/${randomSong}.ogg`;
-		audio.play();
+			let version;
+			if (kkVersion == 'both') {
+				if (Math.floor(Math.random() * 2) == 0) version = 'live';
+				else version = 'aircheck';
+			} else version = kkVersion;
 
-		let formattedTitle = `${randomSong.split(' - ')[1]} (${capitalize(version)} Version)`;
-		window.notify("kkMusic", [formattedTitle]);
+			let song;
+			if (kkSelectedSongsEnable && kkSelectedSongs.length > 0) {
+				song = kkSelectedSongs[Math.floor(Math.random() * kkSelectedSongs.length)];
+			} else {
+				song = KKSongList[Math.floor(Math.random() * KKSongList.length)];
+			}
 
-		mediaSessionManager.updateMetadataKK(formattedTitle, randomSong);
+			audio.src = `https://acmusicext.com/static/kk/${version}/${song}.ogg`;
+			audio.play();
+
+			let formattedTitle = `${song.split(' - ')[1]} (${capitalize(version)} Version)`;
+			window.notify("kkMusic", [formattedTitle]);
+
+			mediaSessionManager.updateMetadataKK(formattedTitle, song);
+		});
 	}
 
 	// clears the loop point timeout and the fadeout
@@ -239,6 +257,7 @@ function AudioManager(addEventListener, isTownTune) {
 	addEventListener("pause", () => {
 		clearLoop();
 		fadeOutAudio(300);
+		if (townTunePlaying) pausedDuringTownTune = true;
 	});
 
 	addEventListener("volume", newVol => {
@@ -257,7 +276,7 @@ function AudioManager(addEventListener, isTownTune) {
 					audio.pause();
 					tabAudioPaused = true;
 				} else {
-					if (audio.paused && audio.readyState >= 3) {
+					if (audio.paused && (audio.readyState >= 3 || audio.readyState == 0)) {
 						if (!townTunePlaying) audio.play();
 						tabAudioPaused = false;
 						// Get the badge icon updated.

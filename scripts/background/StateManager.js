@@ -58,13 +58,14 @@ function StateManager() {
 			}
 
 			if (!tabAudio.activated) tabAudio.activate();
+			else tabAudio.checkTabs(true);
 		});
 	};
 
 	// Possible events include:
 	// volume, kkStart, hourMusic, gameChange, weatherChange, pause, tabAudio, musicFailed
 	function notifyListeners(event, args) {
-		if (!options.paused || event === "pause") {
+		if (!options.paused || event === "pause" || event === "volume") {
 			var callbackArr = callbacks[event] || [];
 			for (var i = 0; i < callbackArr.length; i++) {
 				callbackArr[i].apply(window, args);
@@ -86,7 +87,7 @@ function StateManager() {
 	function getSyncedOptions(callback) {
 		chrome.storage.sync.get({
 			volume: 0.5,
-			music: 'new-leaf',
+			music: 'new-horizons',
 			weather: 'sunny',
 			enableNotifications: true,
 			enableKK: true,
@@ -95,13 +96,16 @@ function StateManager() {
 			paused: false,
 			enableTownTune: true,
 			absoluteTownTune: false,
+			townTuneVolume: 0.75,
 			//enableAutoPause: false,
 			zipCode: "98052",
 			countryCode: "us",
 			enableBadgeText: true,
 			tabAudio: 'pause',
 			enableBackground: false,
-			tabAudioReduceValue: 80
+			tabAudioReduceValue: 80,
+			kkSelectedSongsEnable: false,
+			kkSelectedSongs: []
 		}, items => {
 			options = items;
 			if (typeof callback === 'function') callback();
@@ -120,7 +124,8 @@ function StateManager() {
 			let games = [
 				'animal-crossing',
 				'wild-world',
-				'new-leaf'
+				'new-leaf',
+				'new-horizons'
 			];
 
 			data.music = games[Math.floor(Math.random() * games.length)];
@@ -157,8 +162,8 @@ function StateManager() {
 		else if (!isKK()) {
 			let musicAndWeather = getMusicAndWeather();
 			notifyListeners("hourMusic", [hour, musicAndWeather.weather, musicAndWeather.music, true]);
-
-			if (options.paused && options.absoluteTownTune) townTuneManager.playTune();
+			// Play hourly tune when paused, but only if town tune is enabled
+			if (options.paused && (options.absoluteTownTune && options.enableTownTune)) townTuneManager.playTune(tabAudio.audible);
 		}
 	});
 
@@ -182,7 +187,7 @@ function StateManager() {
 				let musicAndWeather = getMusicAndWeather();
 				notifyListeners("gameChange", [timeKeeper.getHour(), musicAndWeather.weather, musicAndWeather.music]);
 			}
-			if ((isKK() && !wasKK) || (kkVersion != options.kkVersion && isKK())) notifyListeners("kkStart", [options.kkVersion]);
+			if ((isKK() && !wasKK) || (kkVersion != options.kkVersion && isKK()) || ('kkSelectedSongsEnable' in changes || 'kkSelectedSongs' in changes)) notifyListeners("kkStart", [options.kkVersion]);
 			if (!isKK() && wasKK) {
 				let musicAndWeather = getMusicAndWeather();
 				notifyListeners("hourMusic", [timeKeeper.getHour(), musicAndWeather.weather, musicAndWeather.music, false]);
