@@ -11,6 +11,7 @@
 	<script src="scripts/options/navigation.js"></script>
 	<script src="scripts/global/tune_player.js"></script>
 	<script src="scripts/options/tune_editor.js"></script>
+	<script src="scripts/background/KKSongs.js"></script>
 	<script src="scripts/options/options.js"></script>
 	<script src="scripts/options/contributors.js"></script>
 
@@ -161,6 +162,14 @@
 							<input id="kk-version-both" name="kk-version" type="radio"><label
 								for="kk-version-both"><span><span></span></span>Both</label>
 						</div>
+					</section>
+					<section>
+						<h4>Select songs</h4>
+						<div class="checkbox">
+							<input id="kk-songs-selection-enable" type="checkbox"><label for="kk-songs-selection-enable"><span></span>Only play the selected K.K. songs</label>
+						</div>
+						<select id="kk-songs-selection" style="height: 25vh" multiple></select>
+						<label for="kk-songs-selection" style="display: block"><b>Strg/Cmd + Click</b> for mutliple selection</label>
 					</section>
 
 					<h3>Town Tune <a id="town-tune-button-link" class="exclamation">!</a></h3>
@@ -324,7 +333,7 @@
 				</header>
 
 				<div class="content">
-					<h3>Version 4.2.0<span class="changelog-date"> - ???</span></h3>
+					<h3>Version 4.2.0<span class="changelog-date"> - 28th of March 2020</span></h3>
 					<ul class="changelog-list">
 						<li>Added support for New Horizons.</li>
 						<li>Fixed a bug causing the extension to sometimes not run in the background when the feature was enabled.</li>

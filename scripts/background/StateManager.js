@@ -103,7 +103,9 @@ function StateManager() {
 			enableBadgeText: true,
 			tabAudio: 'pause',
 			enableBackground: false,
-			tabAudioReduceValue: 80
+			tabAudioReduceValue: 80,
+			kkSelectedSongsEnable: false,
+			kkSelectedSongs: []
 		}, items => {
 			options = items;
 			if (typeof callback === 'function') callback();
@@ -160,7 +162,8 @@ function StateManager() {
 		else if (!isKK()) {
 			let musicAndWeather = getMusicAndWeather();
 			notifyListeners("hourMusic", [hour, musicAndWeather.weather, musicAndWeather.music, true]);
-			if (options.paused && options.absoluteTownTune) townTuneManager.playTune(tabAudio.audible);
+			// Play hourly tune when paused, but only if town tune is enabled
+			if (options.paused && (options.absoluteTownTune && options.enableTownTune)) townTuneManager.playTune(tabAudio.audible);
 		}
 	});
 
@@ -184,7 +187,7 @@ function StateManager() {
 				let musicAndWeather = getMusicAndWeather();
 				notifyListeners("gameChange", [timeKeeper.getHour(), musicAndWeather.weather, musicAndWeather.music]);
 			}
-			if ((isKK() && !wasKK) || (kkVersion != options.kkVersion && isKK())) notifyListeners("kkStart", [options.kkVersion]);
+			if ((isKK() && !wasKK) || (kkVersion != options.kkVersion && isKK()) || ('kkSelectedSongsEnable' in changes || 'kkSelectedSongs' in changes)) notifyListeners("kkStart", [options.kkVersion]);
 			if (!isKK() && wasKK) {
 				let musicAndWeather = getMusicAndWeather();
 				notifyListeners("hourMusic", [timeKeeper.getHour(), musicAndWeather.weather, musicAndWeather.music, false]);
