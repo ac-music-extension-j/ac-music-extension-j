@@ -176,9 +176,10 @@ function StateManager() {
 	chrome.storage.onChanged.addListener(changes => {
 
 		// Firefox handles onChanged weirdly and provides *everything*, regardless
-		// of whether or not it changed. To make it be handled more like Chrome, and 
-		// make the rest of this code more readable, this goes through everything in
-		// the "changes" listener and deletes it.
+		// of whether or not it changed. To make it be handled more like Chromium-based
+		// browsers, and make the rest of this code more readable, this goes through 
+		// everything in the "changes" object and deletes items in it if both values 
+		// are the same.
 		Object.keys(changes).forEach((change) => { 
 			if (changes[change].oldValue == changes[change].newValue) delete changes[change];
 			else {
@@ -219,7 +220,7 @@ function StateManager() {
 	// play/pause when user clicks the extension icon
 	chrome.browserAction.onClicked.addListener(toggleMusic);
 
-	// play/pause when Chrome closes and the option to play in background is disabled
+	// play/pause when the browser closes and the option to play in background is disabled
 	chrome.tabs.onRemoved.addListener(checkTabs);
 	chrome.tabs.onCreated.addListener(checkTabs);
 	setInterval(checkTabs, 1000);
