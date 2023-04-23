@@ -87,7 +87,7 @@ All of the contributors for versions post-3.0 can be found [here](https://github
 
 Credit is due to [Andrex](https://www.neogaf.com/members/andrex.20593/) and [blazescorch2](https://www.neogaf.com/members/blazescorch2.142800/) from NeoGAF for developing the original 1.0 and 2.0 versions of the extension.
 
-Original concept of the extension taken from [Brian Lee](http://b-lee.net/)'s [Animal Crossing music website](http://tane.us/ac/).
+Original concept of the extension taken from [Brian Lee](https://b-lee.net/)'s [Animal Crossing music website](https://tane.us/ac/).
 
 ## Licensing
 Animal Crossing Music is licensed under the zlib license. See [LICENSE.md](./LICENSE.md) for reference.
