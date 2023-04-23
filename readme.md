@@ -2,34 +2,36 @@
 
 # Animal Crossing Music 🍀 (J variant)
 
-**Animal Crossing Music** is a fun extension for Chrome and Firefox that lets you play Animal Crossing's music in the browser while you browse the web! ✨
+**Animal Crossing Music** is a fun browser extension that lets you play Animal Crossing's music in the browser while you browse the web! ✨ 
+
+The J variant was made after over 3 years of no upstream maintenance, and a strong love for Animal Crossing 💌
 
 The music updates in real-time on the hour, and informs you via an optional desktop notification and customizable town tune! 🌱
 
-***The J variant of Animal Crossing Music is not official.** Please do not go to PikaDude, anyone who works on the main project, or anyone in the Discord server, for any kind of support.*
+***The J variant of Animal Crossing Music is not associated with upstream.** Please do not go to PikaDude, anyone who works on the main project, or anyone in the Discord server, for any kind of support.*
 
 ## Features
-### Hourly Music 🕒
+### Hourly music 🕒
 Listen to the corresponding hourly music from the main Animal Crossing titles:
   - Animal Crossing
   - Wild World / City Folk
   - New Leaf
   - New Horizons
 
-'Raining' and 'snowing' variants are also included!
+Raining and snowing variants are also included!
 
-### Live Weather 🌧
-You can enable the "Live Weather" function so weather variants of the hourly music can be automatically picked according to the weather in your specified location!
+### Live weather 🌧
+If you enable the "Live Weather" function, weather variants of the hourly music will be automatically picked according to the weather in your specified location!
 
 ### K.K. Slider 🎙
 Listen to K.K. Slider's songs! The extension features both 'live' and 'aircheck' version of his tunes.
 
 You can choose whether to keep his appearances to the usual Saturday nights, or to play his songs 24/7.
 
-### Town Tune 🎵
-The extension features an awesome Town Tune editor available within the browser.
+### Town tune 🎵
+The extension features an awesome town tune editor available within the browser.
 
-With it you can compose your custom Town Tune, which will be played every time an hour passes, just like the games!
+With it, you can compose your custom town tune! It'll be played every time an hour passes, just like in the games!
 
 ## Installation
 ### Stable release
@@ -38,11 +40,17 @@ Currently, there is no stable release. Please wait for a future update to this R
 ### Other branches (using the source code)
 You can download the source code of the project and install the unpacked extension yourself to access the latest, greatest and probably buggy unreleased features and updates. Just click on the `Code` button at the top-right of the page and then on `Download ZIP`.
 
-To install the downloaded project, do the following:
+To install the downloaded file as an extension, try the steps below.
+
+**Note:** These instructions are for Chromium-based browsers (Google Chrome, Microsoft Edge, Kiwi Browser, Opera, Opera GX, Vivaldi, Brave, etc.). The extension does work on Firefox and other Gecko-based browsers, but these instructions will be a bit different. (At the moment, it does not on Safari and other WebKit-based browsers.)
 1. Unzip the downloaded file.
-2. Go to the [Chrome Extensions Page](chrome://extensions/), which can be found under `Chrome > Settings > Extensions`.
-3. Enable the `Developer Mode` switch.
-4. Click on `Load Unpacked`.
+2. Get to the extensions page in your browser. 
+   * Try visiting `chrome://extensions` in the address bar.
+   * If you still don't see it, try clicking on the three dots in the top-right of your browser. Look for `Extensions` somewhere.
+      * It may be under `More Tools`, so try looking there if you don't see it.
+   * In some browsers, it's out there front and center, and you can find it
+3. Enable the `Developer mode` switch. 
+4. Click on `Load unpacked`.
 5. Choose the unzipped project directory.
 6. Profit!
 
@@ -71,7 +79,7 @@ If you're still having trouble, also try:
 ## Help & Support
 *The J variant of Animal Crossing Music is not official.* Please do not go to the Discord server for assistance with the extension! **If you need any help with this extension, make an issue here on GitHub or DM me on Discord!**
 
-Although, feel free to jump into the project's [Discord server](https://discord.gg/4FMrEF8) anyway - it's not a very active server at the moment (today is April 23rd, 2023), but it's a nice little community. (And, of course, you can find me there.)
+Although, feel free to jump into the project's [Discord server](https://discord.gg/4FMrEF8) anyway - it's not a very active server, but it's a nice little community. (And, of course, you can find me there.)
 
 ## Contribute
 Contributions to the project are **greatly** appreciated! Here is how you can help to make this project even better:
@@ -83,7 +91,7 @@ If you want to report a bug, or have a feature request/proposal for improvement,
 [Pull requests](https://github.com/jbmagination/ac-music-extension-j/pulls) are equally welcomed. Just make sure to **not submit them to `stable` or `upstream`** and give some love to the PR description!
 
 ## Credit
-All of the contributors for versions post-3.0 can be found [here](https://github.com/animal-crossing-music-extension/ac-music-extension/graphs/contributors) and [here](https://github.com/jbmagination/ac-music-extension-j/graphs/contributors).
+All of the contributors for versions upstream (post-3.0) can be found [here](https://github.com/animal-crossing-music-extension/ac-music-extension/graphs/contributors). All of the contributors for this J variant can be found [here](https://github.com/jbmagination/ac-music-extension-j/graphs/contributors).
 
 Credit is due to [Andrex](https://www.neogaf.com/members/andrex.20593/) and [blazescorch2](https://www.neogaf.com/members/blazescorch2.142800/) from NeoGAF for developing the original 1.0 and 2.0 versions of the extension.
 
