@@ -25,6 +25,9 @@ function AudioManager(addEventListener, isTownTune) {
 	let timeKeeper = new TimeKeeper();
 	let mediaSessionManager = new MediaSessionManager();
 	let kkVersion;
+	let previousWeather;
+	let previousGame;
+
 	let hourlyChange = false;
 	let townTunePlaying = false;
 
@@ -41,6 +44,8 @@ function AudioManager(addEventListener, isTownTune) {
 		clearLoop();
 		audio.loop = true;
 		audio.removeEventListener("ended", playKKSong);
+		let noOtherChanges = (previousGame && previousWeather && (previousGame == game) && (previousWeather == weather));
+		if ((!(isHourChange) && noOtherChanges)) return;
 		let fadeOutLength = isHourChange ? 3000 : 500;
 		fadeOutAudio(fadeOutLength, () => {
 			if (isHourChange && isTownTune() && !tabAudioPaused) {
@@ -50,7 +55,11 @@ function AudioManager(addEventListener, isTownTune) {
 					if (!pausedDuringTownTune) playHourSong(game, weather, hour, false);
 					else pausedDuringTownTune = false;
 				});
-			} else playHourSong(game, weather, hour, false);
+			} else {
+				previousWeather = weather;
+				previousGame = game;
+				playHourSong(game, weather, hour, false);
+			}
 		});
 
 		checkMediaSessionSupport(() => {
