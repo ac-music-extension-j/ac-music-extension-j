@@ -52,12 +52,12 @@ window.onload = function () {
 	document.getElementById('volume').onchange = saveOptions;
 	document.getElementById('volume').oninput = function() {
 		let volumeText = document.getElementById('volumeText');
-		volumeText.innerHTML = `${formatPercentage(this.value*100)}`;
+		volumeText.innerText = `${formatPercentage(this.value*100)}`;
 	};
 	document.getElementById('townTuneVolume').onchange = saveOptions; // Maybe disable as to only save when clicking "save" button
 	document.getElementById('townTuneVolume').oninput = function() {
 		let ttVolumeText = document.getElementById('townTuneVolumeText');
-		ttVolumeText.innerHTML = `${formatPercentage(this.value*100)}`;
+		ttVolumeText.innerText = `${formatPercentage(this.value*100)}`;
 	};
 
 	onClickElements.forEach(el => {
@@ -75,20 +75,23 @@ window.onload = function () {
 	});
 
 	let enableBackgroundEl = document.getElementById('enable-background');
+	if (!(navigator.userAgentData)) enableBackgroundEl.disabled = true;
 	enableBackgroundEl.onclick = () => {
-		chrome.permissions.contains({ permissions: ['background'] }, hasPerms => {
-			if (enableBackgroundEl.checked) {
-				chrome.permissions.contains({ permissions: ['background'] }, hasPerms => {
-					if (hasPerms) saveOptions();
-					else {
-						chrome.permissions.request({ permissions: ['background'] }, hasPerms => {
-							if (hasPerms) saveOptions();
-							else enableBackgroundEl.checked = false;
-						});
-					}
-				});
-			} else if (hasPerms) chrome.permissions.remove({ permissions: ['background'] });
-		});
+		if (navigator.userAgentData) {
+			chrome.permissions.contains({ permissions: ['background'] }, hasPerms => {
+				if (enableBackgroundEl.checked) {
+					chrome.permissions.contains({ permissions: ['background'] }, hasPerms => {
+						if (hasPerms) saveOptions();
+						else {
+							chrome.permissions.request({ permissions: ['background'] }, hasPerms => {
+								if (hasPerms) saveOptions();
+								else enableBackgroundEl.checked = false;
+							});
+						}
+					});
+				} else if (hasPerms) chrome.permissions.remove({ permissions: ['background'] });
+			});
+		}
 	}
 
 	document.getElementById('kk-songs-selection-enable').onchange = saveOptions;
@@ -212,7 +215,7 @@ function restoreOptions() {
 		kkSelectedSongs: []
 	}, items => {
 		document.getElementById('volume').value = items.volume;
-		document.getElementById('volumeText').innerHTML = `${formatPercentage(items.volume*100)}`;
+		document.getElementById('volumeText').innerText = `${formatPercentage(items.volume*100)}`;
 		document.getElementById(items.music).checked = true;
 		document.getElementById(items.weather).checked = true;
 		document.getElementById('enable-notifications').checked = items.enableNotifications;
@@ -223,11 +226,11 @@ function restoreOptions() {
 		document.getElementById('enable-town-tune').checked = items.enableTownTune;
 		document.getElementById('absolute-town-tune').checked = items.absoluteTownTune;
 		document.getElementById('townTuneVolume').value = items.townTuneVolume;
-		document.getElementById('townTuneVolumeText').innerHTML = `${formatPercentage(items.townTuneVolume*100)}`;
+		document.getElementById('townTuneVolumeText').innerText = `${formatPercentage(items.townTuneVolume*100)}`;
 		document.getElementById('zip-code').value = items.zipCode;
 		document.getElementById('country-code').value = items.countryCode;
 		document.getElementById('enable-badge').checked = items.enableBadgeText;
-		document.getElementById('enable-background').checked = items.enableBackground;
+		document.getElementById('enable-background').checked = navigator.userAgentData ? items.enableBackground : false;
 		document.getElementById('tab-audio-' + items.tabAudio).checked = true;
 		document.getElementById('tab-audio-reduce-value').value = items.tabAudioReduceValue;
 		document.getElementById('kk-songs-selection-enable').checked = items.kkSelectedSongsEnable;

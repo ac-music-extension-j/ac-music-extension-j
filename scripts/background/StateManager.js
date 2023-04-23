@@ -4,11 +4,14 @@
 'use strict';
 
 function StateManager() {
+	let self;
+	self = this;
 
-	let self = this;
+	let options;
+	options = {};
 
-	let options = {};
-	let callbacks = {};
+	let callbacks;
+	callbacks = {};
 
 	let timeKeeper = new TimeKeeper();
 	let tabAudio = new TabAudioHandler();
@@ -171,6 +174,20 @@ function StateManager() {
 	// Detects that the user has updated an option
 	// Updates the 'options' variable and notifies listeners of any pertinent changes
 	chrome.storage.onChanged.addListener(changes => {
+
+		// Firefox handles onChanged weirdly and provides *everything*, regardless
+		// of whether or not it changed. To make it be handled more like Chrome, and 
+		// make the rest of this code more readable, this goes through everything in
+		// the "changes" listener and deletes it.
+		Object.keys(changes).forEach((change) => { 
+			if (changes[change].oldValue == changes[change].newValue) delete changes[change];
+			else {
+				if (Array.isArray(changes[change].oldValue) && Array.isArray(changes[change].newValue)) {
+					if (changes[change].oldValue.every(item => changes[change].newValue.includes(item)) && changes[change].newValue.every(item => changes[change].oldValue.includes(item))) delete changes[change];
+				}
+			}
+		})
+		
 		printDebug('A data object has been updated: ', changes)
 		let wasKK = isKK();
 		let kkVersion = options.kkVersion;
@@ -179,6 +196,8 @@ function StateManager() {
 		let oldBadgeTextEnabled = this.getOption("enableBadgeText");
 		// Trigger 'options' variable update
 		getSyncedOptions(() => {
+			console.log(changes)
+			console.log(options)
 			// Detect changes and notify corresponding listeners
 			if ('zipCode' in changes) weatherManager.setZip(changes.zipCode.newValue);
 			if ('countryCode' in changes) weatherManager.setCountry(changes.countryCode.newValue);
@@ -187,7 +206,7 @@ function StateManager() {
 				let musicAndWeather = getMusicAndWeather();
 				notifyListeners("gameChange", [timeKeeper.getHour(), musicAndWeather.weather, musicAndWeather.music]);
 			}
-			if ((isKK() && !wasKK) || (kkVersion != options.kkVersion && isKK()) || ('kkSelectedSongsEnable' in changes || 'kkSelectedSongs' in changes)) notifyListeners("kkStart", [options.kkVersion]);
+			if ((isKK() && !wasKK) || (kkVersion != options.kkVersion && isKK()) || (('kkSelectedSongsEnable' in changes || 'kkSelectedSongs' in changes) && isKK())) notifyListeners("kkStart", [options.kkVersion]);
 			if (!isKK() && wasKK) {
 				let musicAndWeather = getMusicAndWeather();
 				notifyListeners("hourMusic", [timeKeeper.getHour(), musicAndWeather.weather, musicAndWeather.music, false]);
