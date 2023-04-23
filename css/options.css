@@ -192,3 +192,7 @@ h3, h4 {
 .navigation h1{
     color: #5C6166;
 }
+
+.chrome-bootstrap select {
+    background-image: none, linear-gradient(#ededed, #ededed 38%, #dedede) !important;
+}

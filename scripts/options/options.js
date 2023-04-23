@@ -104,8 +104,6 @@ window.onload = function () {
 		songOption.value = song;
 		kkSongsSelect.appendChild(songOption);
 	});
-
-	updateContributors();
 }
 
 function saveOptions() {
