@@ -219,7 +219,7 @@ function StateManager() {
 	// play/pause when user clicks the extension icon
 	chrome.browserAction.onClicked.addListener(toggleMusic);
 
-	// play/pause when chrome closes and the option to play in background is disabled
+	// play/pause when Chrome closes and the option to play in background is disabled
 	chrome.tabs.onRemoved.addListener(checkTabs);
 	chrome.tabs.onCreated.addListener(checkTabs);
 	setInterval(checkTabs, 1000);

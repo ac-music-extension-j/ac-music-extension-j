@@ -1,4 +1,4 @@
-// Handles Chrome notifications
+// Handles notifications
 
 'use strict';
 
