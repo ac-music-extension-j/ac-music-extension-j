@@ -34,14 +34,14 @@
    "manifest_version": 2,
    "name": "Animal Crossing Music",
    "options_ui": {
-      "page":"options.html",
+      "page": "options.html",
       "open_in_tab": true
    },
-   // "browser_specific_settings": {
-   //    "gecko": {
-   //      "id": "addon@example.com"
-   //    }
-   //  },
+   "browser_specific_settings": {
+      "gecko": {
+        "id": "{2fff585f-d956-4ea6-ba18-6fc7177f55a7}"
+      }
+   },
    "permissions": [
       "notifications",
       "storage",
