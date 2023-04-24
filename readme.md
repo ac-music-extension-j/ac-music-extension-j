@@ -35,7 +35,7 @@ With it, you can compose your custom town tune! It'll be played every time an ho
 
 ## Installation
 ### Stable release
-Currently, there is no stable release. Please wait for a future update to this README.
+~~Currently, there is no stable release. Please wait for a future update to this README.~~ There's a stable release! I'll write instructions tomorrow - for now, download the ZIP file [here](https://github.com/jbmagination/ac-music-extension-j/releases/latest/download/ac-music-extension.zip) and follow the directions below.
 
 ### Other branches (using the source code)
 You can download the source code of the project and install the unpacked extension yourself to access the latest, greatest and probably buggy unreleased features and updates. Just click on the `Code` button at the top-right of the page and then on `Download ZIP`.
