@@ -96,6 +96,7 @@ function StateManager() {
 			enableKK: true,
 			alwaysKK: false,
 			kkVersion: 'live',
+			paused: false,
 			enableTownTune: true,
 			absoluteTownTune: false,
 			townTuneVolume: 0.75,
@@ -109,8 +110,14 @@ function StateManager() {
 			kkSelectedSongsEnable: false,
 			kkSelectedSongs: []
 		}, items => {
+			if (window.localStorage.getItem('paused') == null) {
+				window.localStorage.setItem('paused', `${items.paused}`);
+				console.log(`window.localStorage.getItem('paused') POST-NULL CHECK: ${window.localStorage.getItem('paused')}`);
+			}
 			items.paused = window.localStorage.getItem("paused") == "true";
+			console.log(`items.paused COOKED: ${items.paused}`);
 			options = items;
+			console.log(`options.paused: ${items.paused}`);
 			if (typeof callback === 'function') callback();
 		});
 	}
@@ -237,9 +244,10 @@ function StateManager() {
 
 	function toggleMusic() {
 		window.localStorage.setItem('paused', !options.paused);
-		getSyncedOptions(() => {
-			if (options.paused) notifyListeners("pause");
-			else self.activate();
+		console.log(`toggleMusic localStorage set: ${window.localStorage.getItem('paused')}`);
+ 		getSyncedOptions(() => {
+ 			if (options.paused) notifyListeners("pause");
+ 			else self.activate();
 		});
 	}
 
