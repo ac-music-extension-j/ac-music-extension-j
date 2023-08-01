@@ -193,6 +193,6 @@ h3, h4 {
     color: #5C6166;
 }
 
-.chrome-bootstrap select {
+.chrome-bootstrap select[multiple] {
     background-image: none, linear-gradient(#ededed, #ededed 38%, #dedede) !important;
 }
