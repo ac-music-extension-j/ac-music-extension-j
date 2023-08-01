@@ -48,7 +48,8 @@
       "https://acmusicext.com/"
    ],
    "optional_permissions": [
-      "background"
+      "background",
+      "<all_urls>"
    ], 
    "version": "1.0.0"
 }
