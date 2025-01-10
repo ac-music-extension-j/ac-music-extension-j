@@ -83,6 +83,7 @@
 .chrome-bootstrap h3,
 .chrome-bootstrap h4 {
   -webkit-user-select: none;
+  user-select: none;
   font-weight: normal;
   line-height: 1;
 }
@@ -274,6 +275,7 @@ section {
   border-inline-start: 6px solid transparent;
   padding-inline-start: 18px;
   -webkit-user-select: none;
+  user-select: none;
   display: list-item;
   text-align: -webkit-match-parent;
 }
@@ -372,6 +374,7 @@ section {
 .chrome-bootstrap .highlightable li .action {
   -webkit-appearance: none;
   -moz-appearance: none;
+  appearance: none;
   transition: opacity 150ms;
   background: #8AAAED;
   border: none;
@@ -410,7 +413,9 @@ section {
 .chrome-bootstrap button {
   -webkit-appearance: none;
   -moz-appearance: none;
+  appearance: none;
   -webkit-user-select: none;
+  user-select: none;
   background-image: linear-gradient(#ededed, #ededed 38%, #dedede);
   border: 1px solid rgba(0, 0, 0, 0.25);
   border-radius: 2px;
@@ -426,6 +431,7 @@ section {
 }
 .chrome-bootstrap input[type='checkbox']:checked::before {
   -webkit-user-select: none;
+  user-select: none;
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAALCAYAAACprHcmAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9wDBhYcG79aGIsAAACbSURBVBjTjdFBCkFhFAXgj4fp24PBy0SZ2ICRXRgYGb2xlKzBSEo2YgsiKWVoZgFKMjD5X/2Ux6lb99bpnNO5lKMR5i8MsEQHkhJiEzlS9HCqfiFWMUIt3AfsC3KKLCL30Qr7HfM4Ro4h6rhiEqmusIMKuphGqo+ogSPGcbYLzh91vdkXSHDDBk+0gxussS3rNcMCs+D6E18/9gLPPhbDshfzLgAAAABJRU5ErkJggg==");
   background-size: 100% 100%;
   content: '';
@@ -545,7 +551,7 @@ section {
 .chrome-bootstrap .overlay { 
   align-items: center;
   flex-direction: column;
- justify-content: center;
+  justify-content: center;
   transition: opacity .2s;
   background-color: rgba(255, 255, 255, 0.75);
   bottom: 0;
@@ -599,6 +605,7 @@ section {
 .chrome-bootstrap .overlay .page h1 {
   padding-inline-end: 24px;
   -webkit-user-select: none;
+  user-select: none;
   color: #333;
   font-size: 120%;
   margin: 0;
