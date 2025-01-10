@@ -112,12 +112,17 @@ function StateManager() {
 		}, items => {
 			if (window.localStorage.getItem('paused') == null) {
 				window.localStorage.setItem('paused', `${items.paused}`);
-				console.log(`window.localStorage.getItem('paused') POST-NULL CHECK: ${window.localStorage.getItem('paused')}`);
 			}
+			if (window.localStorage.getItem('volume') == null) {
+				window.localStorage.setItem('volume', `${items.volume}`);
+			}
+			if (window.localStorage.getItem('townTuneVolume') == null) {
+				window.localStorage.setItem('townTuneVolume', `${items.townTuneVolume}`);
+			}	
 			items.paused = window.localStorage.getItem("paused") == "true";
-			console.log(`items.paused COOKED: ${items.paused}`);
+			items.volume = (window.localStorage.getItem("volume") >= 0 && window.localStorage.getItem("volume") !== null) ? window.localStorage.getItem("volume") : 0.5;
+			items.townTuneVolume = (window.localStorage.getItem("townTuneVolume") >= 0 && window.localStorage.getItem("townTuneVolume") !== null) ? window.localStorage.getItem("townTuneVolume") : 0.75;
 			options = items;
-			console.log(`options.paused: ${items.paused}`);
 			if (typeof callback === 'function') callback();
 		});
 	}
@@ -180,8 +185,7 @@ function StateManager() {
 	// 'Updated options' listener callback
 	// Detects that the user has updated an option
 	// Updates the 'options' variable and notifies listeners of any pertinent changes
-	chrome.storage.onChanged.addListener(changes => {
-
+	let storageListener = (changes) => {
 		// Firefox handles onChanged weirdly and provides *everything*, regardless
 		// of whether or not it changed. To make it be handled more like Chromium-based
 		// browsers, and make the rest of this code more readable, this goes through 
@@ -199,13 +203,11 @@ function StateManager() {
 		printDebug('A data object has been updated: ', changes)
 		let wasKK = isKK();
 		let kkVersion = options.kkVersion;
-		let oldTabAudio = this.getOption("tabAudio");
-		let oldTabAudioReduce = this.getOption("tabAudioReduceValue");
-		let oldBadgeTextEnabled = this.getOption("enableBadgeText");
+		let oldTabAudio = self.getOption("tabAudio");
+		let oldTabAudioReduce = self.getOption("tabAudioReduceValue");
+		let oldBadgeTextEnabled = self.getOption("enableBadgeText");
 		// Trigger 'options' variable update
 		getSyncedOptions(() => {
-			console.log(changes)
-			console.log(options)
 			// Detect changes and notify corresponding listeners
 			if ('zipCode' in changes) weatherManager.setZip(changes.zipCode.newValue);
 			if ('countryCode' in changes) weatherManager.setCountry(changes.countryCode.newValue);
@@ -222,7 +224,15 @@ function StateManager() {
 			if (oldTabAudio != options.tabAudio || oldTabAudioReduce != options.tabAudioReduceValue) notifyListeners("tabAudio", [null, options.tabAudio, options.tabAudioReduceValue]);
 			if (oldBadgeTextEnabled != options.enableBadgeText) badgeManager.updateEnabled(options.enableBadgeText);
 		});
-	});
+	};
+	chrome.storage.onChanged.addListener(storageListener)
+	addEventListener("storage", changes => {
+		var changesObj = {}
+		changesObj[changes['key']] = {}
+		changesObj[changes['key']]['newValue'] = changes['newValue']
+		changesObj[changes['key']]['oldValue'] = changes['oldValue']
+		storageListener(changesObj)
+	})
 
 	// play/pause when user clicks the extension icon
 	chrome.browserAction.onClicked.addListener(toggleMusic);
@@ -244,8 +254,7 @@ function StateManager() {
 
 	function toggleMusic() {
 		window.localStorage.setItem('paused', !options.paused);
-		console.log(`toggleMusic localStorage set: ${window.localStorage.getItem('paused')}`);
- 		getSyncedOptions(() => {
+		getSyncedOptions(() => {
  			if (options.paused) notifyListeners("pause");
  			else self.activate();
 		});
