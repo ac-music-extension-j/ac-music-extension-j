@@ -186,7 +186,6 @@ function saveOptions() {
 	document.getElementById('kk-songs-selection').disabled = !kkSelectedSongsEnable;
 
 	chrome.storage.sync.set({
-		volume,
 		music,
 		weather,
 		enableNotifications,
@@ -195,7 +194,6 @@ function saveOptions() {
 		kkVersion,
 		enableTownTune,
 		absoluteTownTune,
-		townTuneVolume,
 		zipCode,
 		countryCode,
 		enableBadgeText,
@@ -205,6 +203,8 @@ function saveOptions() {
 		kkSelectedSongsEnable,
 		kkSelectedSongs
 	});
+	window.localStorage.setItem("volume", volume)
+	window.localStorage.setItem("townTuneVolume", townTuneVolume)
 }
 
 function restoreOptions() {
@@ -230,6 +230,14 @@ function restoreOptions() {
 		kkSelectedSongsEnable: false,
 		kkSelectedSongs: []
 	}, items => {
+		if (window.localStorage.getItem('volume') == null) {
+			window.localStorage.setItem('volume', `${items.volume}`);
+		}
+		if (window.localStorage.getItem('townTuneVolume') == null) {
+			window.localStorage.setItem('townTuneVolume', `${items.townTuneVolume}`);
+		}
+		items.volume = (window.localStorage.getItem("volume") >= 0 && window.localStorage.getItem("volume") !== null) ? window.localStorage.getItem("volume") : 0.5;
+		items.townTuneVolume = (window.localStorage.getItem("townTuneVolume") >= 0 && window.localStorage.getItem("volume") !== null) ? window.localStorage.getItem("townTuneVolume") : 0.75;
 		document.getElementById('volume').value = items.volume;
 		document.getElementById('volumeText').innerText = `${formatPercentage(items.volume*100)}`;
 		document.getElementById(items.music).checked = true;
