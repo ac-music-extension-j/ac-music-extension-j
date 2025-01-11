@@ -44,23 +44,34 @@ function AudioManager(addEventListener, isTownTune) {
 		clearLoop();
 		audio.loop = true;
 		audio.removeEventListener("ended", playKKSong);
-		let noOtherChanges = (previousGame && previousWeather && (previousGame == game) && (previousWeather == weather));
-		if ((!(isHourChange) && noOtherChanges)) return;
-		let fadeOutLength = isHourChange ? 3000 : 500;
-		fadeOutAudio(fadeOutLength, () => {
-			if (isHourChange && isTownTune() && !tabAudioPaused) {
-				townTunePlaying = true;
-				townTuneManager.playTune(false, () => {
-					townTunePlaying = false;
-					if (!pausedDuringTownTune) playHourSong(game, weather, hour, false);
-					else pausedDuringTownTune = false;
-				});
-			} else {
-				previousWeather = weather;
-				previousGame = game;
-				playHourSong(game, weather, hour, false);
-			}
-		});
+		
+		let isWeatherChange = (previousWeather && !(previousWeather == weather));
+		let noGameChange = previousGame && (previousGame == game)
+		let noOtherChangesWeather = (noGameChange && !(isHourChange));
+		let noOtherChangesHour = (noGameChange && !(isWeatherChange));
+		
+		if (isWeatherChange && noOtherChangesWeather) {
+			previousWeather = weather;
+			previousGame = game;
+			playHourSong(game, weather, hour, false, true);
+		} else {
+			if ((!(isHourChange) && noOtherChangesHour)) return;
+			let fadeOutLength = isHourChange ? 3000 : 500;
+			fadeOutAudio(fadeOutLength, () => {
+				if (isHourChange && isTownTune() && !tabAudioPaused) {
+					townTunePlaying = true;
+					townTuneManager.playTune(false, () => {
+						townTunePlaying = false;
+						if (!pausedDuringTownTune) playHourSong(game, weather, hour, false, false);
+						else pausedDuringTownTune = false;
+					});
+				} else {
+					previousWeather = weather;
+					previousGame = game;
+					playHourSong(game, weather, hour, false, false);
+				}
+			});
+		}
 
 		checkMediaSessionSupport(() => {
 			navigator.mediaSession.setActionHandler('nexttrack', null);
@@ -69,8 +80,11 @@ function AudioManager(addEventListener, isTownTune) {
 
 	// Plays a song for an hour, setting up loop times if
 	// any exist
-	function playHourSong(game, weather, hour, skipIntro) {
+	function playHourSong(game, weather, hour, skipIntro, started) {
 		audio.loop = true;
+
+		let seekTime = 0;
+		if (started) seekTime = audio.currentTime;
 
 		// STANDARD SONG NAME FORMATTING
 		let songName = formatHour(hour);
@@ -88,7 +102,6 @@ function AudioManager(addEventListener, isTownTune) {
 
 		let loopTime = ((loopTimes[game] || {})[weather] || {})[hour];
 		let delayToLoop;
-		let started = false;
 
 		if (loopTime) {
 			delayToLoop = loopTime.end;
@@ -108,12 +121,11 @@ function AudioManager(addEventListener, isTownTune) {
 			if (started && loopTime) {
 				delayToLoop = loopTime.end;
 				delayToLoop -= audio.currentTime;
-
 				setLoopTimes();
 			}
 		};
 
-		if (!tabAudioPaused) audio.play().then(setLoopTimes).catch(audioPlayError);
+		if (!tabAudioPaused) { audio.currentTime = seekTime; audio.play().then(setLoopTimes).catch(audioPlayError); }
 		else window.notify("pause", [tabAudioPaused]); // Set the badge icon back to the paused state
 
 		function setLoopTimes() {
