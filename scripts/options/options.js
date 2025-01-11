@@ -104,6 +104,19 @@ window.onload = function () {
 		songOption.value = song;
 		kkSongsSelect.appendChild(songOption);
 	});
+
+	let ctrlCmdText;
+	let macCheck;
+	// navigator.platform is deprecated; rely on navigator.userAgentData first and foremost...
+	// ...but navigator.userAgentData is only supported in Chrome. yay, standards!
+	if (navigator.userAgentData) {
+		(async () => {
+			macCheck = (await navigator.userAgentData.getHighEntropyValues(['platform'])).platform == 'macOS'
+		})()
+	} else macCheck = navigator.platform == 'MacIntel'
+	if (macCheck) ctrlCmdText = 'Command/Cmd'
+	else ctrlCmdText = 'Control/Ctrl/Steuerung/Strg'
+	document.getElementById('ctrl-cmd').textContent = ctrlCmdText;
 }
 
 function displayThirdBox() {
